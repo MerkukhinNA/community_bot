@@ -1,0 +1,15 @@
+services:
+  community_bot:
+    build:
+      context: ./app
+      dockerfile: ../dockerfile.app
+    container_name: community_bot
+    command: 
+      - python 
+      - main.py
+    env_file: '../.env'
+    network_mode: host
+    restart: always
+
+networks:
+  default:
