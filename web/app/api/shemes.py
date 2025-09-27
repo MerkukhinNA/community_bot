@@ -111,8 +111,76 @@ class Visits(BaseModel):
 class CreateCommunity(BaseModel):
     name: str
     discription: str
-    for_spark_part: bool
+    question: bool
+     
+     
+class UpdateCommunity(BaseModel):
+    community_id: int
+    name: str
+    discription: str
+    question: bool
     
     
 class Community(BaseModel):
     community_id: int
+    
+    
+class CreateQuestion(BaseModel):
+    user_chat_id: str
+    text: str
+    
+    
+class UserQuestions(BaseModel):
+    
+    class Question(BaseModel):
+        question_id: int
+        text: str
+        date: str
+        status: str
+    
+    msg: str = ''
+    success: bool
+    questions: list[Question] | list
+    err: str = ''
+    
+    
+class Question(BaseModel):
+    question_id: int
+    
+    
+class Answer(BaseModel):
+    user_chat_id: str
+    question_id: int
+    text: str
+
+    
+class FullQuestion(BaseModel):
+    
+    class Data(BaseModel):
+        text: str
+        user_chat_id: str
+        date_create: str
+        user_name: str
+        user_contact: str
+        answer: str
+        date_answer: str
+    
+    msg: str = ''
+    success: bool
+    data: Data | None
+    err: str = ''
+
+    
+class ShortQuestions(BaseModel):
+    
+    class Question(BaseModel):
+        question_id: int
+        status: str
+        text: str
+        date: str
+        user_name: str
+    
+    msg: str = ''
+    success: bool
+    questions: list[Question] | list
+    err: str = ''

@@ -1,6 +1,6 @@
 import { hadleButtons } from './btnHandler.js';
 import { getEvents } from '../../common/callCommonApi.js';
-import { generateEventHTML } from '../../common/generateHTML.js';
+import { generateEventsHTML } from '../../common/generateHTML.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     hadleButtons()
@@ -15,5 +15,5 @@ document.addEventListener('DOMContentLoaded', async function() {
         checked: true
     }));
     
-    generateEventHTML(data, 'dynamic-container');
+    generateEventsHTML(data, 'dynamic-container');
 });

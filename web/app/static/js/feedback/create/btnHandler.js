@@ -2,19 +2,20 @@ import { getUserId } from '../../common/tgWebApp.js';
 
 export function hadleButtons() {
     document.getElementById('back-btn').addEventListener('click', function(event) {
-        window.location.href = '../main-menu';
+        window.location.href = './menu';
     });
+
+    const question = document.getElementById('question');
+    
     document.getElementById('confirm-btn').addEventListener('click', function(event) {
         bootstrap.Modal.getInstance(document.getElementById('confirm-modal')).hide();
-        const selectedBtn = document.querySelector('input[name="event"]:checked');
-        console.log('selected id', selectedBtn.id);
 
         const data = {
             user_chat_id: String(getUserId()),
-            visit_id: parseInt(selectedBtn.id)
+            text: question.value
         }
         
-        const api = '../api/v1/users/visits/delete'
+        const api = '../api/v1/question/create'
         console.log(`Отправленные данные на "${api}":`, data);
         fetch(api, {
             method: 'POST',
@@ -25,8 +26,14 @@ export function hadleButtons() {
         })
         .then(response => response.json())
         .then(responseData => {
-            console.log("Ответ от сервера: " + JSON.stringify(responseData));
-            location.reload(true);
+            if (responseData['success']) {
+                console.log("Ответ от сервера: " + JSON.stringify(responseData));
+                window.location.href = './menu';
+                alert("Вопрос отправлен");
+
+            } else {
+                alert("Ответ от сервера: " + JSON.stringify(responseData));
+            }
         })
         .catch(error => {
             console.error('Ошибка:', error);

@@ -5,8 +5,8 @@ export function hadleButtons() {
         window.location.href = '.././menu';
     });
 
-    const communityName = document.getElementById('community-name');
-    const communityDiscription = document.getElementById('community-discription');
+    const communityName = document.getElementById('name');
+    const communityDiscription = document.getElementById('discription');
     const question = document.getElementById('question-yes-btn');  // Самый простой способ - просто проверять чек одной из кнопок
     
     document.getElementById('confirm-btn').addEventListener('click', function(event) {
@@ -15,7 +15,7 @@ export function hadleButtons() {
         const data = {
             name: communityName.value,
             discription: communityDiscription.value,
-            for_spark_part: question.value,
+            question: question.checked,
         }
         
         const api = '/api/v1/community/create'
@@ -29,7 +29,6 @@ export function hadleButtons() {
         })
         .then(response => response.json())
         .then(responseData => {
-            console.log("Ответ от сервера: " + JSON.stringify(responseData));
             if (responseData['success']) {
                 console.log("Ответ от сервера: " + JSON.stringify(responseData));
                 window.location.href = '.././menu';

@@ -25,16 +25,10 @@
   
   <!-- Кнопки  -->
   <div class="d-flex flex-column align-items-center gap-2">
-    <label class="form-label d-block">Меню администратора</label>
-
     <div class="d-flex flex-column align-items-center gap-2 mt-3">
-      <button id="feedback-btn" type="submit" class="btn btn-primary">Вопросы к Управляющей Компании</button>
-      <button id="community-create-btn" type="submit" class="btn btn-primary"> Создать сообщество</button>
-      <button id="community-delete-btn" type="submit" class="btn btn-primary">Удалить сообщество</button>
-      <button id="community-update-btn" type="submit" class="btn btn-primary">Изменить сообщество</button>
-      <button id="event-create-btn" type="submit" class="btn btn-primary"> Создать событие</button>
-      <button id="event-delete-btn" type="submit" class="btn btn-primary">Удалить событие</button>
-      <button id="visit-delete-btn" type="submit" class="btn btn-primary">Удалить запись пользователя</button>
+      <label class="form-label d-block">Вопросы к УК</label>
+      <button id="create-btn" type="submit" class="btn btn-primary"> Задать Вопрос</button>
+      <button id="my-btn" type="submit" class="btn btn-primary">Мои Вопросы</button>
     </div>
   </div>
   
@@ -43,5 +37,5 @@
   <!-- Подключение библиотеки Telegram Web App (нужно не только в рабочем html скрипте, но и обязательно в главном index.html)-->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Подключение самописный JS -->
-  <script type="module" src="/static/js/admin/menu/main.js"></script>
+  <script type="module" src="/static/js/feedback/menu/main.js"></script>
 </body>

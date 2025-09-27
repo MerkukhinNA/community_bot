@@ -4,6 +4,9 @@ export function hadleButtons() {
     document.getElementById('back-btn').addEventListener('click', function(event) {
         window.location.href = '../main-menu';
     });
+    document.getElementById('feedback-btn').addEventListener('click', function(event) {
+        window.location.href = './feedback';
+    });
     document.getElementById('community-create-btn').addEventListener('click', function(event) {
         window.location.href = './community/create';
     });

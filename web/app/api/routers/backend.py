@@ -3,7 +3,10 @@ from io import BytesIO
 from fastapi import APIRouter
 
 from db.db_manager import db
-from api.shemes import AddUser, User, Responce, Events, CreateEventVisit, DeleteEventVisit, EventVisits, CreateCommunity, Communityes, Community, Event, Visits, EventVisit, CreateEvent
+from db.enum import UserQuestionStatus
+from api.shemes import AddUser, User, Responce, Events, CreateEventVisit, DeleteEventVisit, EventVisits,\
+    CreateCommunity, Communityes, Community, Event, Visits, EventVisit, CreateEvent, UpdateCommunity,\
+    CreateQuestion, UserQuestions, Question, FullQuestion, ShortQuestions, Answer
 
 
 router = APIRouter()
@@ -36,7 +39,7 @@ async def get_user_visits(data: User):
                     event_discription=visit.event.discription
                 )
             )
-        
+            
         return EventVisits(visits=visits, success=True)
 
     except Exception as e:
@@ -79,6 +82,26 @@ async def get_user_actual_events(data: User):
 
     except Exception as e:
         return Events(success=False, err=f'{e}')
+    
+@router.post('/api/v1/user/questions', tags=['user'], response_model=UserQuestions)
+async def get_user_questions(data: User):
+    try:
+        questions: list[UserQuestions.Question] = []
+        sorted_db_questions = sorted(db.get_user_questions(data.chat_id), key=lambda x: x.date, reverse=True)
+        for question in sorted_db_questions:
+            questions.append(
+                UserQuestions.Question(
+                    question_id=question.question_id,
+                    text=question.text[:50],
+                    date=str(question.date.strftime("%Y-%m-%d")),
+                    status=question.status,
+                )
+            )
+            
+        return UserQuestions(questions=questions, success=True)
+
+    except Exception as e:
+        return UserQuestions(success=False, err=f'{e}')
     
 @router.get('/api/v1/events', tags=['event'], response_model=Events)
 async def get_events():
@@ -125,7 +148,7 @@ async def get_communityes():
         for community in db.get_communityes():
             communityes.append(
                 Communityes.Community(
-                    community_id=community.communiy_id,
+                    community_id=community.community_id,
                     name=community.name,
                     discription=community.discription,
                     for_spark_part=community.for_spark_park,
@@ -140,7 +163,16 @@ async def get_communityes():
 @router.post('/api/v1/community/create', tags=['community'], response_model=Responce)
 async def add_community(data: CreateCommunity):
     try:
-        db.add_community(data.name, data.discription, data.for_spark_part)
+        db.add_community(data.name, data.discription, data.question)
+        return Responce(success=True)
+
+    except Exception as e:
+        return Responce(success=False, err=f'{e}')
+    
+@router.post('/api/v1/community/update', tags=['community'], response_model=Responce)
+async def update_community(data: UpdateCommunity):
+    try:
+        db.update_community(data.community_id, data.name, data.discription, data.question)
         return Responce(success=True)
 
     except Exception as e:
@@ -182,6 +214,70 @@ async def get_visits():
 async def del_community(data: EventVisit):
     try:
         db.del_visit(data.visit_id)
+        return Responce(success=True)
+
+    except Exception as e:
+        return Responce(success=False, err=f'{e}')
+    
+@router.post('/api/v1/question/create', tags=['question'], response_model=Responce)
+async def add_question(data: CreateQuestion):
+    try:
+        db.add_question(data.user_chat_id, data.text)
+        return Responce(success=True)
+
+    except Exception as e:
+        return Responce(success=False, err=f'{e}')
+    
+@router.post('/api/v1/question/full', tags=['question'], response_model=FullQuestion)
+async def get_full_question(data: Question):
+    try:
+        db_question = db.get_question(data.question_id)
+        data = FullQuestion.Data(
+            text=db_question.text,
+            user_chat_id=db_question.user.chat_id,
+            date_create=str(db_question.date.strftime("%Y-%m-%d %H:%M:%S")),
+            user_name=db_question.user.name + ' ' + db_question.user.last_name,
+            user_contact=db_question.user.phone,
+            answer=
+                'УК еще не ответила' if not db_question.answer 
+                else db_question.answer.text,
+            date_answer=
+                '-' if not db_question.answer 
+                else str(db_question.answer.date.strftime("%Y-%m-%d %H:%M:%S"))
+        )
+        
+        return FullQuestion(data=data, success=True)
+
+    except Exception as e:
+        return FullQuestion(success=False, err=f'{e}')
+
+@router.post('/api/v1/question/shorts', tags=['question'], response_model=ShortQuestions)
+async def get_short_questions():
+    try:
+        questions: list[ShortQuestions.Question] = []
+        sorted_db_questions = sorted(db.get_questions(), key=lambda x: list(UserQuestionStatus).index(UserQuestionStatus(x.status)), reverse=False)  # По статусу
+        # sorted_db_questions = sorted(db.get_questions(), key=lambda x: x.date, reverse=True). # По дате
+
+        for question in sorted_db_questions:
+            questions.append(
+                ShortQuestions.Question(
+                    question_id=question.question_id,
+                    status=question.status,
+                    text=question.text[:50],
+                    date=str(question.date.strftime("%Y-%m-%d")),
+                    user_name=question.user.name + ' ' + question.user.last_name
+                )
+            )
+            
+        return ShortQuestions(questions=questions, success=True)
+
+    except Exception as e:
+        return ShortQuestions(success=False, err=f'{e}')
+    
+@router.post('/api/v1/question/answer/create', tags=['question'], response_model=Responce)
+async def add_asnwer(data: Answer):
+    try:
+        db.add_asnwer(data.user_chat_id, data.question_id, data.text)
         return Responce(success=True)
 
     except Exception as e:

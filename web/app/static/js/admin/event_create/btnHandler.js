@@ -32,7 +32,6 @@ export function hadleButtons() {
         })
         .then(response => response.json())
         .then(responseData => {
-            console.log("Ответ от сервера: " + JSON.stringify(responseData));
             if (responseData['success']) {
                 console.log("Ответ от сервера: " + JSON.stringify(responseData));
                 window.location.href = '.././menu';
