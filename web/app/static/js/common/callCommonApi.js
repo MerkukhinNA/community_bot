@@ -137,3 +137,28 @@ export function getVisits(localPath='') {
         return "err: " + error
     });
 }
+
+export function getUserQuestion(localPath='') {
+    const data = {
+        chat_id: String(getUserId()),
+    }
+    
+    const api = localPath + 'api/v1/user/questions'
+    console.log(`Отправленные данные на "${api}":`, data);
+    return fetch(api, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(responseData => {
+        console.log("Ответ от сервера: " + JSON.stringify(responseData, null, 2));
+        return responseData
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        return "err: " + error
+    });
+}

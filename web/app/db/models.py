@@ -1,7 +1,7 @@
 from datetime import date, datetime as dt
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import  Column, Integer, String, Text, Boolean, TIMESTAMP, Date, ForeignKey, Identity, BigInteger, Enum
-from enum import Enum as PyEnum
+from db.enum import EventVisitStatus, UserQuestionStatus
 
 
 class Base(DeclarativeBase):
@@ -20,6 +20,8 @@ class User(Base):
     company: Mapped[str] = mapped_column(Text(), nullable=True)
 
     event_visits: Mapped[list['EventVisit']] = relationship('EventVisit', back_populates='user') 
+    questions: Mapped[list['Question']] = relationship('Question', back_populates='user') 
+    answers: Mapped[list['Answer']] = relationship('Answer', back_populates='user') 
 
 
 class Log(Base):
@@ -36,7 +38,7 @@ class Log(Base):
 class Community(Base):
     __tablename__ = "communities"
     
-    communiy_id: Mapped[int] = mapped_column(Identity(), primary_key=True, index=True)
+    community_id: Mapped[int] = mapped_column(Identity(), primary_key=True, index=True)
     name: Mapped[str] = mapped_column(Text(), nullable=True)
     discription: Mapped[str] = mapped_column(Text(), nullable=True)
     for_spark_park: Mapped[bool] = mapped_column(Boolean(), nullable=True, default=False)
@@ -49,7 +51,7 @@ class Event(Base):
     __tablename__ = "event"
     
     event_id: Mapped[int] = mapped_column(Identity(), primary_key=True, index=True)
-    communiy_id: Mapped[int] = mapped_column(Integer(), ForeignKey('communities.communiy_id'), nullable=True)
+    community_id: Mapped[int] = mapped_column(Integer(), ForeignKey('communities.community_id'), nullable=True)
     name: Mapped[str] = mapped_column(Text(), nullable=True)
     discription: Mapped[str] = mapped_column(Text(), nullable=True)
     date: Mapped[dt] = mapped_column(TIMESTAMP(), nullable=True)
@@ -58,13 +60,6 @@ class Event(Base):
     communiy: Mapped['Community'] = relationship('Community', back_populates='events', lazy='joined') 
     visits: Mapped[list['EventVisit']] = relationship('EventVisit', back_populates='event') 
     
-    
-class EventVisitStatus(PyEnum):
-    CREATED='created'
-    PENDING='pending'
-    ACCEPTED='accepted'
-    REJECTED='rejected'
-
 
 class EventVisit(Base):
     __tablename__ = "event_visits"
@@ -77,3 +72,31 @@ class EventVisit(Base):
 
     event: Mapped['Event'] = relationship('Event', back_populates='visits', lazy='joined') 
     user: Mapped['User'] = relationship('User', back_populates='event_visits', lazy='joined') 
+    
+
+class Question(Base):
+    __tablename__ = "questions"
+        
+    question_id: Mapped[int] = mapped_column(Identity(), primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer(), ForeignKey('users.user_id'), nullable=True)
+    text: Mapped[str] = mapped_column(Text(), nullable=True)
+    status: Mapped[UserQuestionStatus] = mapped_column(Enum(UserQuestionStatus), nullable=False, default=UserQuestionStatus.CREATED)
+    date: Mapped[dt] = mapped_column(TIMESTAMP(), nullable=True)
+    deleted: Mapped[bool] = mapped_column(Boolean(), nullable=True, default=False)
+
+    user: Mapped['User'] = relationship('User', back_populates='questions', lazy='joined')
+    answer: Mapped['Answer'] = relationship('Answer', back_populates='question', lazy='joined') 
+
+
+class Answer(Base):
+    __tablename__ = "answers"
+
+    answer_id: Mapped[int] = mapped_column(Identity(), primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer(), ForeignKey('users.user_id'), nullable=True)
+    question_id: Mapped[int] = mapped_column(Integer(), ForeignKey('questions.question_id'), nullable=True)
+    text: Mapped[str] = mapped_column(Text(), nullable=True)
+    date: Mapped[dt] = mapped_column(TIMESTAMP(), nullable=True)
+    deleted: Mapped[bool] = mapped_column(Boolean(), nullable=True, default=False)
+
+    user: Mapped['User'] = relationship('User', back_populates='answers', lazy='joined')
+    question: Mapped['Question'] = relationship('Question', back_populates='answer', lazy='joined')

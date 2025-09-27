@@ -59,3 +59,15 @@ async def read_root(request: Request):
 @router.get("/admin/visit/delete", tags=['root']) 
 async def read_root(request: Request):
     return templates.TemplateResponse("admin/visit-delete.html", {"request": request})
+
+@router.get("/feedback/menu", tags=['root']) 
+async def read_root(request: Request):
+    return templates.TemplateResponse("feedback/menu.html", {"request": request})
+
+@router.get("/feedback/create", tags=['root']) 
+async def read_root(request: Request):
+    return templates.TemplateResponse("feedback/create.html", {"request": request})
+
+@router.get("/feedback/my", tags=['root']) 
+async def read_root(request: Request):
+    return templates.TemplateResponse("feedback/my.html", {"request": request})

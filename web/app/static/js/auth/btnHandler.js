@@ -1,4 +1,4 @@
-import { getUserId } from '../tgWebApp.js';
+import { getUserId } from '../common/tgWebApp.js';
 
 export function hadleButtons() {
     const firstName = document.getElementById('first-name');

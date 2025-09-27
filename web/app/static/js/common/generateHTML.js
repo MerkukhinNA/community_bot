@@ -61,3 +61,23 @@ export function generateEventHTML(data, elementId) {
     
     container.innerHTML += html;
 }
+
+export function generateQuestionHTML(data, elementId) {
+    const container = document.getElementById(elementId);
+    let html = '';
+    
+    data.forEach(data => {
+        html += `
+            <input type="radio" id="${data.id}" class="btn-check" 
+                   name="event" 
+                   autocomplete="off" ${data.checked ? 'checked' : ''}>
+            <label class="btn btn-outline-primary" for="${data.id}">
+                Статус: ${data.status}
+                <br><small>Текст: ${data.text}</small>
+                <br><small>Дата: ${data.date_create}</small>
+            </label>
+        `;
+    });
+    
+    container.innerHTML += html;
+}

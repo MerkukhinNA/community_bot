@@ -7,6 +7,9 @@ export function hadleButtons() {
     document.getElementById('my-event-btn').addEventListener('click', function(event) {
         window.location.href = 'event/my';
     });
+    document.getElementById('feedback-btn').addEventListener('click', function(event) {
+        window.location.href = 'feedback/menu';
+    });
     document.getElementById('admin-btn').addEventListener('click', function(event) {
         window.location.href = 'admin/menu';
     });

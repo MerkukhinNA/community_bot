@@ -2,7 +2,7 @@ import uvicorn, os
 from api.app import app
 
 
-# # Просто начальная настройка БД
+# Просто начальная настройка БД
 # from db.db_manager import db
 # db.start_setup()
 
