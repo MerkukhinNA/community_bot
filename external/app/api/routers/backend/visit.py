@@ -1,0 +1,42 @@
+from fastapi import APIRouter
+
+from db.db_manager import db
+from db.enum import UserQuestionStatus
+from api.shemes import AddUser, User, Responce, Events, CreateEventVisit, DeleteEventVisit, EventVisits,\
+    CreateCommunity, Communityes, Community, Event, Visits, EventVisit, CreateEvent, UpdateCommunity,\
+    CreateQuestion, UserQuestions, Question, FullQuestion, ShortQuestions, Answer
+
+
+router = APIRouter()
+
+@router.get('/api/v1/visits', tags=['visit'], response_model=Visits)
+async def get_visits():
+    try:
+        visits: list[Communityes.Community] = []
+        for visit in db.get_visits():
+            visits.append(
+                Visits.Visit(
+                    visit_id=visit.visit_id,
+                    user_name=visit.user.name,
+                    user_last_name=visit.user.last_name,
+                    user_phone=visit.user.phone,
+                    community_name=visit.event.communiy.name,
+                    event_name=visit.event.name,
+                    event_discription=visit.event.discription,
+                    event_date=str(visit.event.date),
+                )
+            )
+        
+        return Visits(visits=visits, success=True)
+
+    except Exception as e:
+        return Visits(success=False, err=f'{e}')
+    
+@router.post('/api/v1/visit/delete', tags=['visit'], response_model=Responce)
+async def del_community(data: EventVisit):
+    try:
+        db.del_visit(data.visit_id)
+        return Responce(success=True)
+
+    except Exception as e:
+        return Responce(success=False, err=f'{e}')

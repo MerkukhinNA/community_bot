@@ -6,7 +6,7 @@ services:
   community_bot_db:
     image: postgres:latest
     container_name: community_bot_db
-    env_file: './.env'
+    env_file: '../.env'
     ports:
       - '5433:5432' 
     networks:
