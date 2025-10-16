@@ -1,0 +1,21 @@
+# Для запуска   docker compose -f docker-compose.app.yaml -p community_bot up --build
+
+services:
+  community_bot_external:
+    build:
+      context: ./app
+      dockerfile: ../dockerfile.app
+    container_name: community_bot_external
+    ports:
+      - '8099:8099'  
+    command:
+      - python
+      - main.py
+    env_file: '../.env'
+    restart: always
+    networks:
+      - default 
+
+networks:
+  default:
+    external: false

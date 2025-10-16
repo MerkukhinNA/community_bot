@@ -1,0 +1,19 @@
+services:
+  community_bot_internal:
+    build:
+      context: ./app
+      dockerfile: ../dockerfile.app
+    container_name: community_bot_internal
+    ports:
+      - '8098:8098'  
+    command:
+      - python
+      - main.py
+    env_file: '../.env'
+    restart: always
+    networks:
+      - default 
+
+networks:
+  default:
+    external: false
